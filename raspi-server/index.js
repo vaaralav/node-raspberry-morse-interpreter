@@ -2,6 +2,7 @@ var express = require('express'),
     app = express(),
     bodyParser = require('body-parser'),
     morgan = require('morgan'),
+    morseGpio = require('./morse-gpio.js'),
     morse = require('morse');
 
 // Parse body
@@ -16,6 +17,12 @@ app.get('/', function (req, res) {
 
 app.post('/morse', function(req, res) {
   res.json({status: 'ok', result: morse.encode(req.body.text)});
+});
+
+app.post('/blink', function(req, res) {
+  const blinkMorseCode = morse.encode(req.body.text);
+  res.json({status: 'ok', result: morseCode});
+  morseGpio.blinkMorseCode(morseCode, 17);
 });
 
 app.listen(3000, function () {
