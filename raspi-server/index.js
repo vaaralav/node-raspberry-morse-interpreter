@@ -20,8 +20,12 @@ app.post('/morse', function(req, res) {
 });
 
 app.post('/blink', function(req, res) {
-  const blinkMorseCode = morse.encode(req.body.text);
-  res.json({status: 'ok', result: morseCode});
+  const morseCode = morse.encode(req.body.text);
+  res.json({
+    status: 'ok',
+    result: morseCode,
+    time: morseGpio.estimateTime(morseCode)
+  });
   morseGpio.blinkMorseCode(morseCode, 17);
 });
 
