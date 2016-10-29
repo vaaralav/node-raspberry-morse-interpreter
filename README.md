@@ -18,6 +18,7 @@ To install and run the Raspberry Pi back end run the following.
 ```bash
 cd raspi-server
 npm install # This one migth take some time
+sudo env "PATH=$PATH" bash # GPIO usage requires sudo
 npm start
 ```
 
