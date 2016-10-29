@@ -36,7 +36,7 @@ module.exports.blinkMorseCode = function blinkMorseCode(morseCode, pin) {
 module.exports.estimateTime = function estimateTime(morseCode) {
   return morseCode.split('').reduce(function(totalTime, c) {
     totalTime += morseUnits[c].time || 6 * TIME_UNIT;
-    totalTime += TIME_UNIT;
+    return totalTime + TIME_UNIT;
   }, 0);
 }
 
