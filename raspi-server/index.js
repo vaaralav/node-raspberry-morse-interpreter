@@ -3,7 +3,8 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     morgan = require('morgan'),
     morseGpio = require('./morse-gpio.js'),
-    morse = require('morse');
+    morse = require('morse'),
+    request = require('request');
 
 // Parse body
 app.use(bodyParser.json());
@@ -15,20 +16,22 @@ app.get('/', function (req, res) {
   res.send(morse.encode('Hello World!'));
 });
 
-app.post('/morse', function(req, res) {
-  res.json({status: 'ok', result: morse.encode(req.body.text)});
-});
+function validateRequest(req) {
+  const isMorseValid = req.body.morse && (typeof req.body.morse == 'string' || req.body.morse instanceof String);
+  const isIdValid = req.body.id && Number.isInteger(req.body.id);
+  return isMorseValid && isIdValid;
+}
 
 app.post('/blink', function(req, res) {
-  const morseCode = morse.encode(req.body.text);
-  const response = {
-    status: 'ok',
-    result: morseCode,
-    time: morseGpio.estimateTime(morseCode)
-  };
-  console.log(response);
-  res.json(response);
-  morseGpio.blinkMorseCode(morseCode, 17);
+  if(!validateRequest(req)) {
+    res.sendStatus(400);
+  }
+  res.sendStatus(202);
+  morseGpio.blinkMorseCode(req.body.morse, 17);
+  request({
+    method: 'DELETE',
+    url: API_URL + '/morse/' + req.body.id
+  })
 });
 
 app.listen(3000, function () {
