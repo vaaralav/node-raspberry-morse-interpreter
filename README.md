@@ -38,6 +38,7 @@ This one can be run on any machine. You'll need `npm`
 ```bash
 cd morse-server
 yarn # or npm install
+cp config.json.example config.json # + make your configurations
 npm start-dev # To start development server
 npm start # To start production server
 ```
