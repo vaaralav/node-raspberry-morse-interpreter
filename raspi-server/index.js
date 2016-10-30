@@ -4,7 +4,8 @@ var express = require('express'),
     morgan = require('morgan'),
     morseGpio = require('./morse-gpio.js'),
     morse = require('morse'),
-    request = require('request');
+    request = require('request'),
+    API_URL = require('./config.json').API_URL;
 
 // Parse body
 app.use(bodyParser.json());
