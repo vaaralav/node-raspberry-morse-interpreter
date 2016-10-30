@@ -20,6 +20,16 @@ function createMorseEntity(text) {
   }
 };
 
+function getById(id) {
+  return queue.find(function(entity) {
+    return entity.id === id;
+  });
+}
+
+function deleteById(id) {
+  const index = queue.indexOf(getById(id));
+  queue.splice(index, 1);
+}
 
 // Parse body
 app.use(bodyParser.json());
@@ -62,12 +72,18 @@ app.post('/api/morse', function(req, res) {
 
 // List entities
 app.get('/api/morse', function(req, res) {
-  res.sendStatus(501);
+  res.json(queue);
 });
 
 app.delete('/api/morse/:id', function(req, res) {
-  res.sendStatus(501);
+  if(!getById(req.params.id)) {
+    res.sendStatus(404);
+  }
+
+  deleteById(req.params.id);
+  res.sendStatus(200);
 });
+
 
 app.listen(8080, function () {
   console.log('Example app listening on port 8080!');
