@@ -2,9 +2,26 @@
 <html>
 <head>
 	<title>Morse</title>
+	<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
 </head>
 <body>
-Hello!
+<form id="morse-form" action="api/morse" method="POST" enctype="application/json">
+<fieldset>
+<label for="text">Morsetettava teksti</label>
+<input type="text" id="text" name="text"/>
+<input type="submit" />
+</fieldset>
+</form>
+
+<div id="last">
+	<span class="last-text"></span>
+	<span class="last-morse"></span>
+</div>
+
+<ul id="queue">
+</ul>
+
+
 <script type="text/javascript" src="client.js"></script>
 </body>
 </html>

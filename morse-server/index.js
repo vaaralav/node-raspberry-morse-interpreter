@@ -22,6 +22,7 @@ function createMorseEntity(text) {
 
 function getById(id) {
   return queue.find(function(entity) {
+    console.log(entity.id, id, entity.id === id);
     return entity.id === id;
   });
 }
@@ -33,17 +34,20 @@ function deleteById(id) {
 
 // Parse body
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+})); 
 
 // Logger
 app.use(morgan('combined'));
 
 // Serve client
 app.get('/', function (req, res) {
-  res.sendFile('client/index.html');
+  res.sendFile(__dirname + '/client/index.html');
 });
 
 // Serve client static files
-app.use(express.static('client/assets'));
+app.use(express.static(__dirname + '/client'));
 
 // API
 // ---
@@ -51,7 +55,8 @@ app.use(express.static('client/assets'));
 // Create new morse entity
 app.post('/api/morse', function(req, res) {
   if(!req.body.text || typeof req.body.text !== 'string' && !(req.body.text instanceof String)) {
-    res.send(400);
+    console.log(req.body);
+    return res.sendStatus(400);
   }
   var newMorseEntity = createMorseEntity(req.body.text);
 
@@ -65,6 +70,7 @@ app.post('/api/morse', function(req, res) {
       res.status(500).json(body);
     } else {
       queue.push(newMorseEntity);
+
       res.status(201).json(newMorseEntity);
     }
   });
@@ -75,12 +81,23 @@ app.get('/api/morse', function(req, res) {
   res.json(queue);
 });
 
-app.delete('/api/morse/:id', function(req, res) {
-  if(!getById(req.params.id)) {
+app.get('/api/morse/:id', function(req, res) {
+  const entity = getById(+req.params.id);
+  console.log(queue, id, entity);
+  if(entity) {
+    res.json(entity);
+  } else {
     res.sendStatus(404);
   }
+});
 
+app.delete('/api/morse/:id', function(req, res) {
+  if(!getById(+req.params.id)) {
+    return res.sendStatus(404);
+  }
+  console.log('before delete', queue.slice());
   deleteById(req.params.id);
+  console.log('after delete', queue.slice());
   res.sendStatus(200);
 });
 
