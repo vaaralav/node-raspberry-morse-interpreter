@@ -25,6 +25,7 @@ function validateRequest(req) {
 
 app.post('/blink', function(req, res) {
   if(!validateRequest(req)) {
+    console.error(JSON.stringify(req.body));
     res.sendStatus(400);
   }
   res.sendStatus(202);

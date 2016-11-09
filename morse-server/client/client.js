@@ -39,7 +39,14 @@ var morseUI = (function($) {
 })(jQuery);
 
 $(document).ready(function() {
+
+  const POLL_INTERVAL = 1500;
+
   morseClient.getMorseQueue(morseUI.populateQueue);
+
+  var pollInterval = setInterval(function() {
+    morseClient.getMorseQueue(morseUI.populateQueue);
+  }, POLL_INTERVAL);
 
   $('#morse-form').on('submit', function(e) {
     e.preventDefault();

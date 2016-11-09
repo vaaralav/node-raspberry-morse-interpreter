@@ -3,6 +3,11 @@
 <head>
 	<title>Morse</title>
 	<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+	<style type="text/css">
+		#queue li:first-child {
+			border: 2px solid green;
+		}
+	</style>
 </head>
 <body>
 <form id="morse-form" action="api/morse" method="POST" enctype="application/json">

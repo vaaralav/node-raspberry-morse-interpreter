@@ -11,6 +11,7 @@ var express = require('express'),
 // Stuff
 var queue = [];
 var id = 0;
+var isWaiting = false;
 
 function createMorseEntity(text) {
   return {
@@ -49,6 +50,30 @@ app.get('/', function (req, res) {
 // Serve client static files
 app.use(express.static(__dirname + '/client'));
 
+var tryToSend = function tryToSend() {
+  if(!isWaiting && queue.length) {
+    const morseEntity = queue.slice(0,1)[0];
+    isWaiting = true;
+
+    request({
+      url: API_URL + '/blink',
+      method: 'POST',
+      json: morseEntity
+    }, function(error, response, body) {
+      if(error) {
+        console.error(error, response, body);
+        isWaiting = false;
+      } else {
+        console.log(body);
+      }
+    });
+  }
+};
+
+var addNewEntity = function addNewEntity(text) {
+  queue.push(createMorseEntity(text));
+};
+
 // API
 // ---
 
@@ -58,22 +83,8 @@ app.post('/api/morse', function(req, res) {
     console.log(req.body);
     return res.sendStatus(400);
   }
-  var newMorseEntity = createMorseEntity(req.body.text);
-
-  request({
-    url: API_URL + '/blink',
-    method: 'POST',
-    json: newMorseEntity
-  }, function(error, response, body) {
-    if(error) {
-      console.error(error, response, body);
-      res.status(500).json(body);
-    } else {
-      queue.push(newMorseEntity);
-
-      res.status(201).json(newMorseEntity);
-    }
-  });
+  addNewEntity(req.body.text);
+  tryToSend();
 });
 
 // List entities
@@ -96,9 +107,11 @@ app.delete('/api/morse/:id', function(req, res) {
     return res.sendStatus(404);
   }
   console.log('before delete', queue.slice());
-  deleteById(req.params.id);
+  deleteById(+req.params.id);
   console.log('after delete', queue.slice());
+  isWaiting = false;
   res.sendStatus(200);
+  tryToSend();
 });
 
 
