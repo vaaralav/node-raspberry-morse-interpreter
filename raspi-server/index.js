@@ -29,7 +29,9 @@ app.post('/blink', function(req, res) {
     res.sendStatus(400);
   }
   res.sendStatus(202);
+  console.log('Blinking ', req.body);
   morseGpio.blinkMorseCode(req.body.morse, 17);
+  console.log('...done.');
   request({
     method: 'DELETE',
     url: API_URL + '/morse/' + req.body.id

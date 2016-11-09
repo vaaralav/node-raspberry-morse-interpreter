@@ -27,7 +27,7 @@ var morseUI = (function($) {
   var module = {exports: {}};
 
   module.exports.populateQueue = function populateQueue(queue) {
-    console.log(queue);
+
     $('#queue').empty()
     var $queue = queue.map(function(morseEntity) {
       return $('<li>').append($('<div>').text(morseEntity.text)).append($('<div>').text(morseEntity.morse));
